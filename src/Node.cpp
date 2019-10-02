@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-#include"Node.h"
+#include "Node.h"
 
 void Node::updateTable(int newID, int fromID){
     if(fromID == this.leftChildID)
@@ -12,6 +12,27 @@ void Node::updateTable(int newID, int fromID){
     }
     if(this.parentID != -1)
         nodeList[this.parentID].updateTable(newID, this.myID);
+}
+void Node::updateTable(int side){
+    std::set<int> left, right;
+    if(side == 0){
+        this.leftChild.clear();
+        if(this.leftChildID == -1) return;
+        left = nodeList[this.leftChildID].getLeftChild();
+        right = nodeList[this.leftChildID].getRightChild();
+        for(int x : left) this.leftChild.insert(x);
+        for(int x : right) this.leftChild.insert(x);
+    }else if(side == 1){
+        this.rightChild.clear();
+        if(this.rightChildID == -1) return;
+        left = nodeList[this.rightChildID].getLeftChild();
+        right = nodeList[this.rightChildID].getRightChild();
+        for(int x : left) this.rightChild.insert(x);
+        for(int x : right) this.rightChild.insert(x);
+    }else{
+        cout << "Not clear about which child's table the vertex : " << this.myID << " should update" << endl;
+        return;
+    }
 }
 
 void Node::addChild(int newChild){
@@ -65,12 +86,21 @@ void Node::replaceChild(Node target, int typ){
     }
 }
 
+friend void bottomUP(Node &curr, Node &req, Node &pref, Node &w){
+
+}
+
 Node Node::findNode(int srchID){
     if(this.amI(scrchID)) return this;
     if(this.isRightChild(srchID)) return nodeList[this.rightChildID].findNode(srchID);
     if(this.isLeftChild(srchID)) return nodeList[this.leftChildID].findNode(srchID);
     if(this.parentID != -1) return nodeList[this.parentID].findNode(srchID);
     return Node(-1);
+}
+bool Node::isHigh(int srchID){
+    if(this.isRightChild(srchID) or this.isLeftChild(srchID))
+        return 0;
+    return 1;
 }
 bool Node::amI(int srchID){
     return srchID == this.myID;
