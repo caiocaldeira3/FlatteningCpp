@@ -21,7 +21,7 @@ private:
     friend void bottomUP(Node &curr, Node &req, Node &pref, Node &w);
 
 public:
-    Node() : myID(ID++) { nodeList[this.myID] = this; };
+    Node();
     Node(int nullNode) : myID(nullNode) { };
     void addChild(int newChild);
     void setChildParent(int childID);
@@ -36,4 +36,3 @@ public:
 };
 
 int Node::ID = 1;
-Node nodeList[MAX];

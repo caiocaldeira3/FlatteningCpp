@@ -9,7 +9,7 @@ SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 
 # -g debug, --coverage para cobertura
 
-CFLAGS := --coverage -g -Wall -O3 -std=c++17
+CFLAGS := -g -Wall -O3 -std=c++17
 INC := -I include/
 
 main:
@@ -23,6 +23,6 @@ run: main
 
 
 clean:
-	$(RM) -r $(OBJDIR)/* $(BINDIR)/*
+	$(RM) -r bin
 
 .PHONY: clean coverage
