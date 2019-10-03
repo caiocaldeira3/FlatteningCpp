@@ -1,131 +1,172 @@
 #include<bits/stdc++.h>
 #include "Node.h"
 
+int Node::ID = 1;
+
+Node::Node() {
+   this->myID = ID++;
+   this->parent = new Node(-1);
+   this->leftChild = new Node(-1);
+   this->rightChild = new Node(-1);
+}
+
 void Node::updateTable(int newID, int fromID){
-    if(fromID == this.leftChildID)
-        this.leftChild.insert(newID);
-    else if(fromID == this.rightChildID)
-        this.rightChild.insert(newID);
+    if(fromID == this->getLeftChildID())
+        this->leftChildTab.insert(newID);
+    else if(fromID == this->getRightChildID())
+        this->rightChildTab.insert(newID);
     else{
-        cout << "Error inserting ID : " << newID << " on vertex : " << this.myID << endl;
+        std::cout << "Error inserting ID : " << newID << " on vertex : " << this->myID << std::endl;
         return;
     }
-    if(this.parentID != -1)
-        nodeList[this.parentID].updateTable(newID, this.myID);
+    if(this->getParentID() != -1)
+        this->parent->updateTable(newID, this->myID);
 }
 void Node::updateTable(int side){
     std::set<int> left, right;
     if(side == 0){
-        this.leftChild.clear();
-        if(this.leftChildID == -1) return;
-        left = nodeList[this.leftChildID].getLeftChild();
-        right = nodeList[this.leftChildID].getRightChild();
-        for(int x : left) this.leftChild.insert(x);
-        for(int x : right) this.leftChild.insert(x);
+        this->leftChildTab.clear();
+        if(this->getLeftChildID() == -1) return;
+        left = this->leftChild->getLeftChildTab();
+        right = this->leftChild->getRightChildTab();
+        for(int x : left) this->leftChildTab.insert(x);
+        for(int x : right) this->leftChildTab.insert(x);
     }else if(side == 1){
-        this.rightChild.clear();
-        if(this.rightChildID == -1) return;
-        left = nodeList[this.rightChildID].getLeftChild();
-        right = nodeList[this.rightChildID].getRightChild();
-        for(int x : left) this.rightChild.insert(x);
-        for(int x : right) this.rightChild.insert(x);
+        this->rightChildTab.clear();
+        if(this->getRightChildID() == -1) return;
+        left = this->rightChild->getLeftChildTab();
+        right = this->rightChild->getRightChildTab();
+        for(int x : left) this->rightChildTab.insert(x);
+        for(int x : right) this->rightChildTab.insert(x);
     }else{
-        cout << "Not clear about which child's table the vertex : " << this.myID << " should update" << endl;
+        std::cout << "Not clear about which child's table the vertex : " << this->myID << " should update" << std::endl;
         return;
     }
 }
 
-void Node::addChild(int newChild){
-    if(this.leftChildID == -1){
-        this.leftChild.insert(newChild);
-        this.leftChildID = newChild;
-    }else if(this.rightChildID == -1){
-        this.rightChild.insert(newChild);
-        this.rightChildID = newChild;
+void Node::addChild(Node *newChild){
+    if(this->getLeftChildID() == -1){
+        this->leftChild = newChild;
+        this->leftChildTab.insert(this->getLeftChildID());
+    }else if(this->getRightChildID() == -1){
+        this->rightChild = newChild;
+        this->rightChildTab.insert(this->getRightChildID());
     }else{
-        cout << "Not enough space on vertex : " << this.myID " to add new child" << endl;
+        std::cout << "Not enough space on vertex : " << this->myID << " to add new child" << std::endl;
         return;
     }
-    if(this.parentID != -1)
-        nodeList[this.parentID].updateTable(newID, this.myID);
-    this.setChildParent(newID);
+    if(this->getParentID() != -1)
+       	this->parent->updateTable(newChild->getMyID(), this->myID);
+    this->setChildParent(newChild);
 }
 
-void Node::setChildParent(int newID){
-    if(newID == -1) return;
-    nodeList[newID].setMyParent(this.myID);
+void Node::setChildParent(Node *newChild){
+    if(newChild->getMyID() == -1) return;
+    newChild->setMyParent(this);
+
 }
-void Node::setMyParent(int parentID){
-    this.parentID = parentID;
+void Node::setMyParent(Node *parent){
+    this->parent = parent;
 }
 
-void Node::replaceChild(Node target, int typ){
+void replaceChild(Node *receiver, Node *target, int typ){
     if(typ == 0){
-        swap(this.leftChild, target.leftChild);
-        swap(this.leftChildID, target.leftChildID);
-        this.setChildParent(this.leftChildID);
-        target.setChildParent(target.leftChildID);
+        std::swap(receiver->leftChildTab, target->leftChildTab);
+        std::swap(receiver->leftChild, target->leftChild);
+        receiver->setChildParent(receiver->leftChild);
+        target->setChildParent(target->leftChild);
     }else if(typ == 1){
-        swap(this.leftChild, target.rightChild);
-        swap(this.leftChildID, target.rightChildID);
-        this.setChildParent(this.leftChildID);
-        target.setChildParent(target.rightChildID);
+        std::swap(receiver->leftChildTab, target->rightChildTab);
+        std::swap(receiver->leftChild, target->rightChild);
+        receiver->setChildParent(receiver->leftChild);
+        target->setChildParent(target->rightChild);
     }else if(typ == 2){
-        swap(this.rightChild, target.leftChild);
-        swap(this.rightChildID, target.leftChildID);
-        this.setChildParent(this.rightChildID);
-        target.setChildParent(target.leftChildID);
+        std::swap(receiver->rightChildTab, target->leftChildTab);
+        std::swap(receiver->rightChild, target->leftChild);
+        receiver->setChildParent(receiver->rightChild);
+        target->setChildParent(target->leftChild);
     }else if(typ == 3){
-        swap(this.rightChild, target.rightChild);
-        swap(this.rightChildID, target.rightChildID);
-        this.setChildParent(this.rightChildID);
-        target.setChildParent(target.rightChildID);
+        std::swap(receiver->rightChildTab, target->rightChildTab);
+        std::swap(receiver->rightChild, target->rightChild);
+        receiver->setChildParent(receiver->rightChild);
+        target->setChildParent(target->rightChild);
     }else{
-        cout << "Invalid type of rotation : " << typ << endl;
+        std::cout << "Invalid type of rotation : " << typ << std::endl;
         return;
     }
+    receiver->deleteSelf();
+    target->deleteSelf();
 }
 
-friend void bottomUP(Node &curr, Node &req, Node &pref, Node &w){
+void Node::deleteSelf(){
+    auto itl = this->leftChildTab.find(this->myID);
+    auto itr = this->rightChildTab.find(this->myID);
+    if(itl != this->leftChildTab.end()){
+        this->leftChildTab.erase(itl);
+    }
+    if(itr != this->rightChildTab.end()){
+        this->rightChildTab.erase(itr);
+    }
+}
+/*
+void Node::bottomUP(Node &curr, Node &req, Node &pref, Node &w){
 
 }
-
-Node Node::findNode(int srchID){
-    if(this.amI(scrchID)) return this;
-    if(this.isRightChild(srchID)) return nodeList[this.rightChildID].findNode(srchID);
-    if(this.isLeftChild(srchID)) return nodeList[this.leftChildID].findNode(srchID);
-    if(this.parentID != -1) return nodeList[this.parentID].findNode(srchID);
-    return Node(-1);
+*/
+Node *Node::findNode(int srchID){
+    if(this->amI(srchID)) return this;
+    if(this->isRightDesc(srchID)) return this->rightChild->findNode(srchID);
+    if(this->isLeftDesc(srchID)) return this->leftChild->findNode(srchID);
+    if(this->getParentID() != -1) return this->parent->findNode(srchID);
+    return new Node(-1);
 }
 bool Node::isHigh(int srchID){
-    if(this.isRightChild(srchID) or this.isLeftChild(srchID))
+    if(this->isRightDesc(srchID) or this->isLeftDesc(srchID))
         return 0;
     return 1;
 }
 bool Node::amI(int srchID){
-    return srchID == this.myID;
+    return srchID == this->myID;
 }
-bool Node::isRightChild(int srchID){
-    auto itID = this.RightChild.find(srchID);
-    if(itID != this.RightChild.end())
+bool Node::isRightDesc(int srchID){
+    auto itID = this->rightChildTab.find(srchID);
+    if(itID != this->rightChildTab.end())
         return true;
     return false;
 }
-bool Node::isLeftChild(int srchID){
-    auto itID = this.LeftChild.find(srchID);
-    if(itID != this.LeftChild.end())
+bool Node::isLeftDesc(int srchID){
+    auto itID = this->leftChildTab.find(srchID);
+    if(itID != this->leftChildTab.end())
         return true;
     return false;
 }
 int Node::getMyID(){
-    return this.myID;
+    return this->myID;
 }
 int Node::getLeftChildID(){
-    return this.LeftChildID;
+    return this->leftChild->getMyID();
 }
 int Node::getRightChildID(){
-    return this.RightChildID;
+    return this->rightChild->getMyID();
 }
-int Node::getFatherID(){
-    return this.FatherID;
+int Node::getParentID(){
+    return this->parent->getMyID();
+}
+std::set<int> Node::getRightChildTab(){
+    return this->rightChildTab;
+}
+std::set<int> Node::getLeftChildTab(){
+    return this->leftChildTab;
+}
+
+void printNode(Node *toPrint){
+    std::cout << "Vertex's ID : " << toPrint->myID << std::endl;
+    std::cout << "Vertex's Parent : " << toPrint->getParentID() << std::endl;
+    std::cout << "Vertex's Left Child : " << toPrint->getLeftChildID() << " || Vertex's Right Child : " << toPrint->getRightChildID() << std::endl;
+
+    std::cout << "Vertex Descendants : " << std::endl;
+    for(int x : toPrint->getLeftChildTab()) std::cout << x << " | ";
+    for(int x : toPrint->getRightChildTab()) std::cout << " | " << x;
+    std::cout << std::endl;
+
 }

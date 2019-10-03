@@ -14,7 +14,7 @@ INC := -I include/
 
 main:
 	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) $(INC) $(MAIN) $^ -o $(BINDIR)/main
+	$(CC) $(CFLAGS) $(INC) $(MAIN) $(SOURCES) $^ -o $(BINDIR)/main
 
 all: main
 
