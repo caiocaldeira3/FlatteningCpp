@@ -1,3 +1,5 @@
+#ifndef NODE_H
+#define NODE_H
 #include<bits/stdc++.h>
 
 const int MAX = 1e3+3;
@@ -13,12 +15,9 @@ private:
     bool amI(int srchId);
     bool isRightDesc(int srchId);
     bool isLeftDesc(int srchId);
-    bool isHigh(int srchID);
     void updateTable(int newID, int fromID);
     void updateTable(int side);
     void deleteSelf();
-    /*friend void bottomUP(Node &curr, Node &req, Node &pref, Node &w);*/
-
 public:
     Node();
     Node(int nullNode) : myID(nullNode) { };
@@ -30,9 +29,11 @@ public:
     int getLeftChildID();
     int getRightChildID();
 	int getParentID();
+    bool isHigh(int srchID);
     std::set<int> getLeftChildTab();
     std::set<int> getRightChildTab();
 
     friend void replaceChild(Node *receiver, Node *target, int typ);
     friend void printNode(Node *toPrint);
 };
+#endif

@@ -1,28 +1,19 @@
 #include<bits/stdc++.h>
+#include "Flattening.h"
 #include "Node.h"
 
 int main(){
 
-    std::vector<Node *> grafo;
+    std::vector<std::vector<int> > grafo;
     for(int i = 0; i < 10; i++)
-        grafo.push_back(new Node());
+        grafo.push_back(std::vector<int>());
     for(int i = 0; i < 10; i++){
-        if(i*2+1 < 9)
-            grafo[i]->addChild(grafo[i*2+1]);
-        if(i*2+2 < 9)
-            grafo[i]->addChild(grafo[i*2+2]);
+        if(i*2+1 < 10)
+            grafo[i].push_back(i*2+1);
+        if(i*2+2 < 10)
+            grafo[i].push_back(i*2+2);
     }
-    for(int i = 0; i < 10; i++)
-        printNode(grafo[i]);
-    std::cout << "------------------------------------" << std::endl;
-    grafo[8]->addChild(grafo[9]);
-    for(int i = 0; i < 10; i++)
-        printNode(grafo[i]);
-    std::cout << "------------------------------------" << std::endl;
-    replaceChild(grafo[0], grafo[9],0);
-    for(int i = 0; i < 10; i++)
-        printNode(grafo[i]);
-    std::cout << "------------------------------------" << std::endl;
-
+    Flattening Rede = Flattening(grafo);
+    Rede.printNetwork();
 
 }

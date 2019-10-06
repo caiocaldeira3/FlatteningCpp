@@ -108,11 +108,7 @@ void Node::deleteSelf(){
         this->rightChildTab.erase(itr);
     }
 }
-/*
-void Node::bottomUP(Node &curr, Node &req, Node &pref, Node &w){
 
-}
-*/
 Node *Node::findNode(int srchID){
     if(this->amI(srchID)) return this;
     if(this->isRightDesc(srchID)) return this->rightChild->findNode(srchID);
@@ -160,6 +156,10 @@ std::set<int> Node::getLeftChildTab(){
 }
 
 void printNode(Node *toPrint){
+    if(toPrint->myID == -1){
+        std::cout << "Empty vertex" << std::endl;
+        return;
+    }
     std::cout << "Vertex's ID : " << toPrint->myID << std::endl;
     std::cout << "Vertex's Parent : " << toPrint->getParentID() << std::endl;
     std::cout << "Vertex's Left Child : " << toPrint->getLeftChildID() << " || Vertex's Right Child : " << toPrint->getRightChildID() << std::endl;
