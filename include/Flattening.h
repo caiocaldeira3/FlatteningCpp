@@ -11,11 +11,12 @@ private:
     std::vector<Node *> rede;
 public:
     Flattening(std::vector<std::vector<int> > originalGraph);
+    Node *getNode(int id);
+    void bottomUP(Node *curr, Node *req, Node *pref);
     void printNetwork();
 
     /* Ainda falta a implementação
     void getRequest(int reqID, int targetID);
-    void bottomUP(Node *curr, Node *req, Node *pref, Node *w);
     void topDownSemi(Node *curr, Node *req, Node *target, Node *newParent);
     void hybridFlatten(Node *target, Node *req);
     */

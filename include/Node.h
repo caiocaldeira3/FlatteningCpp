@@ -24,16 +24,21 @@ public:
     void addChild(Node *newChild);
     void setChildParent(Node *newChild);
     void setMyParent(Node *parent);
+    void fix(Node *newChild, Node *formerChild);
     Node *findNode(int srchId);
     int getMyID();
     int getLeftChildID();
     int getRightChildID();
 	int getParentID();
-    bool isHigh(int srchID);
+    int amRightChild();
+    Node *getRightChild();
+    Node *getOtherChild(Node *prefChild);
+    Node *getParent();
+    bool amHigh(int srchID);
     std::set<int> getLeftChildTab();
     std::set<int> getRightChildTab();
 
-    friend void replaceChild(Node *receiver, Node *target, int typ);
+    friend void replaceChild(Node *target, Node *receiver, int typ);
     friend void printNode(Node *toPrint);
 };
 #endif

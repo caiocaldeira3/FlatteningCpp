@@ -15,5 +15,8 @@ int main(){
     }
     Flattening Rede = Flattening(grafo);
     Rede.printNetwork();
+    Rede.bottomUP(Rede.getNode(10), Rede.getNode(9), Rede.getNode(10)->getRightChild());
+    Rede.printNetwork();
+
 
 }

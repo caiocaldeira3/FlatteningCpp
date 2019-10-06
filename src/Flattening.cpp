@@ -38,6 +38,23 @@ Flattening::Flattening(std::vector<std::vector<int> > originalGraph){
             this->rede[i]->addChild(this->rede[x]);
         }
 }
+Node *Flattening::getNode(int id){
+    if(id > this->size) return new Node(-1);
+    return this->rede[id-1];
+}
+void Flattening::bottomUP(Node *curr, Node *req, Node *pref){
+    Node *parentNode = curr->getParent();
+    Node *grandParent = parentNode->getParent();
+    Node *other = curr->getOtherChild(pref);
+    int typ = (curr->amRightChild()  << 1) + other->amRightChild();
+    replaceChild(curr, parentNode, typ);
+    grandParent->fix(curr, parentNode);
+    if(curr->amHigh(req->getMyID())){
+        grandParent->fix(curr, parentNode);
+    }else{
+        this->bottomUP(curr, req, parentNode);
+    }
+}
 void Flattening::printNetwork(){
     std::cout << "--------------------------" << std::endl;
     for(Node *toPrint : this->rede){
