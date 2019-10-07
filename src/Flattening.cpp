@@ -2,28 +2,7 @@
 #include "Flattening.h"
 #include "Node.h"
 
-int dfs(int u, int p, std::vector<int> &v, std::vector<std::vector<int> > originalGraph){
-    v[u] = 1;
-    int flag = 1;
-    for(int w : originalGraph[u])
-        if(!v[w]) flag &= dfs(w, u, v, originalGraph);
-        else if(p != w) return 0;
-    return flag;
-}
-
-int check(std::vector<std::vector<int> > originalGraph){
-    std::vector<int> v;
-    int isBinary = 1;
-    for(int i = 0; i < (int)originalGraph.size(); i++){
-        v.push_back(0);
-        isBinary &= (originalGraph[i].size() <= 3);
-    }
-    int hasCycles = dfs(0, -1, v, originalGraph);
-    int isConnected = 1;
-    for(int x : v) isConnected &= x;
-    return isConnected && hasCycles && isBinary;
-}
-
+/* Constructors */
 Flattening::Flattening(std::vector<std::vector<int> > originalGraph){
     if(!check(originalGraph)){
         std::cout << "This graph is not suitable to represent a tree-like network" << std::endl;
@@ -38,10 +17,23 @@ Flattening::Flattening(std::vector<std::vector<int> > originalGraph){
             this->rede[i]->addChild(this->rede[x]);
         }
 }
+/* End of Constructors */
+
+/* Getters */
 Node *Flattening::getNode(int id){
     if(id > this->size) return new Node(-1);
     return this->rede[id-1];
 }
+Node *Flattening::getNextNode(Node *curr, Node *target){
+    if(curr->isRightDesc(target->getMyID()))
+        return curr->getRightChild();
+    if(curr->isLeftDesc(target->getMyID()))
+        return curr->getLeftChild();
+    return curr->getParent();
+}
+/* End of Getters */
+
+/* Algorithms */
 void Flattening::bottomUP(Node *curr, Node *req, Node *target, Node *pref){
     Node *parentNode = curr->getParent();
     Node *grandParent = parentNode->getParent();
@@ -51,13 +43,6 @@ void Flattening::bottomUP(Node *curr, Node *req, Node *target, Node *pref){
     grandParent->fix(curr, parentNode);
     if(!curr->amHigh(target->getMyID()))
         this->bottomUP(curr, req, target, parentNode);
-}
-Node *Flattening::getNextNode(Node *curr, Node *target){
-    if(curr->isRightDesc(target->getMyID()))
-        return curr->getRightChild();
-    if(curr->isLeftDesc(target->getMyID()))
-        return curr->getLeftChild();
-    return curr->getParent();
 }
 void Flattening::topDownSemi(Node *curr, Node *req, Node *target, Node *newParent){
     if(curr->amI(target->getMyID()) or curr->isChild(target->getMyID()))
@@ -80,6 +65,29 @@ void Flattening::hybridFlatten(Node *req, Node *target){
     if(!req->isChild(target->getMyID()))
         topDownSemi(req, req, target, req->getParent());
 }
+/* End of Algorithms */
+
+/* Auxiliary Functions */
+int dfs(int u, int p, std::vector<int> &v, std::vector<std::vector<int> > originalGraph){
+    v[u] = 1;
+    int flag = 1;
+    for(int w : originalGraph[u])
+        if(!v[w]) flag &= dfs(w, u, v, originalGraph);
+        else if(p != w) return 0;
+    return flag;
+}
+int check(std::vector<std::vector<int> > originalGraph){
+    std::vector<int> v;
+    int isBinary = 1;
+    for(int i = 0; i < (int)originalGraph.size(); i++){
+        v.push_back(0);
+        isBinary &= (originalGraph[i].size() <= 3);
+    }
+    int hasCycles = dfs(0, -1, v, originalGraph);
+    int isConnected = 1;
+    for(int x : v) isConnected &= x;
+    return isConnected && hasCycles && isBinary;
+}
 void Flattening::printNetwork(){
     std::cout << "--------------------------" << std::endl;
     for(Node *toPrint : this->rede){
@@ -87,3 +95,4 @@ void Flattening::printNetwork(){
         std::cout << "--------------------------" << std::endl;
     }
 }
+/* End of Auxiliary Functions */

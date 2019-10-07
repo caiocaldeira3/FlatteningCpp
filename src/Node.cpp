@@ -3,6 +3,7 @@
 
 int Node::ID = 1;
 
+/* Constructors */
 Node::Node() {
    this->myID = ID++;
    this->parent = new Node(-1);
@@ -11,7 +12,10 @@ Node::Node() {
    this->rightChild = new Node(-1);
    this->setChildParent(this->rightChild);
 }
+/* End of Constructors */
 
+/* Setters and Updates */
+    /* Private */
 void Node::updateTable(int newID, int fromID){
     if(fromID == this->getLeftChildID())
         this->leftChildTab.insert(newID);
@@ -51,7 +55,8 @@ void Node::updateTable(int side){
         return;
     }
 }
-
+    /* End of Private */
+    /* Public */
 void Node::addChild(Node *newChild){
     if(this->getLeftChildID() == -1){
         this->leftChild = newChild;
@@ -67,14 +72,95 @@ void Node::addChild(Node *newChild){
        	this->parent->updateTable(newChild->getMyID(), this->myID);
     this->setChildParent(newChild);
 }
-
 void Node::setChildParent(Node *newChild){
     newChild->setMyParent(this);
 }
 void Node::setMyParent(Node *parent){
     this->parent = parent;
 }
+void Node::fix(Node *newChild, Node *formerChild){
+    if(formerChild->amRightChild()){
+        this->rightChild = newChild;
+        this->setChildParent(newChild);
+    }else if(formerChild->amRightChild() == 0){
+        this->leftChild = newChild;
+        this->setChildParent(newChild);
+    }else{
+        std::cout << formerChild->getMyID() << " is not a son of Vertex : " << this->getMyID() << std::endl;
+        return;
+    }
+}
+    /* End of Public */
+/* End of Setters and Updates */
 
+/* Route Checkers */
+bool Node::amHigh(int srchID){
+    if(this->isRightDesc(srchID) or this->isLeftDesc(srchID))
+        return 1;
+    return 0;
+}
+bool Node::amI(int srchID){
+    return srchID == this->myID;
+}
+int Node::amRightChild(){
+    return this->parent->getRightChildID() == this->getMyID();
+}
+bool Node::isChild(int srchID){
+    return (srchID == this->getLeftChildID()) or (srchID == this->getRightChildID());
+}
+bool Node::isRightDesc(int srchID){
+    auto itID = this->rightChildTab.find(srchID);
+    if(itID != this->rightChildTab.end())
+        return true;
+    return false;
+}
+bool Node::isLeftDesc(int srchID){
+    auto itID = this->leftChildTab.find(srchID);
+    if(itID != this->leftChildTab.end())
+        return true;
+    return false;
+}
+/* End of Route Checkers */
+
+/* Getters */
+Node *Node::getRightChild(){
+    return this->rightChild;
+}
+Node *Node::getLeftChild(){
+    return this->leftChild;
+}
+Node *Node::getOtherChild(Node *pref){
+    if(this->leftChild == pref)
+        return this->rightChild;
+    if(this->rightChild == pref)
+        return this->leftChild;
+    std::cout << pref->getMyID() << " is not a child of the vertex : " << this->getMyID() << std::endl;
+    return new Node(-1);
+}
+Node *Node::getParent(){
+    return this->parent;
+}
+}int Node::getMyID(){
+    return this->myID;
+}
+int Node::getLeftChildID(){
+    return this->leftChild->getMyID();
+}
+int Node::getRightChildID(){
+    return this->rightChild->getMyID();
+}
+int Node::getParentID(){
+    return this->parent->getMyID();
+}
+std::set<int> Node::getRightChildTab(){
+    return this->rightChildTab;
+}
+std::set<int> Node::getLeftChildTab(){
+    return this->leftChildTab;
+}
+/* End of Getters */
+
+/* Friend Functions */
 void replaceChild(Node *target, Node *receiver, int typ){
     if(typ == 0){
         std::swap(receiver->leftChildTab, target->leftChildTab);
@@ -136,87 +222,6 @@ void childSwap(Node *oldNext, Node *curr, Node *newNext, Node *other){
     oldNext->setChildParent(other);
     curr->setChildParent(newNext);
 }
-void Node::fix(Node *newChild, Node *formerChild){
-    if(formerChild->amRightChild()){
-        this->rightChild = newChild;
-        this->setChildParent(newChild);
-    }else if(formerChild->amRightChild() == 0){
-        this->leftChild = newChild;
-        this->setChildParent(newChild);
-    }else{
-        std::cout << formerChild->getMyID() << " is not a son of Vertex : " << this->getMyID() << std::endl;
-        return;
-    }
-}
-Node *Node::findNode(int srchID){
-    if(this->amI(srchID)) return this;
-    if(this->isRightDesc(srchID)) return this->rightChild->findNode(srchID);
-    if(this->isLeftDesc(srchID)) return this->leftChild->findNode(srchID);
-    if(this->getParentID() != -1) return this->parent->findNode(srchID);
-    return new Node(-1);
-}
-bool Node::amHigh(int srchID){
-    if(this->isRightDesc(srchID) or this->isLeftDesc(srchID))
-        return 1;
-    return 0;
-}
-bool Node::amI(int srchID){
-    return srchID == this->myID;
-}
-bool Node::isRightDesc(int srchID){
-    auto itID = this->rightChildTab.find(srchID);
-    if(itID != this->rightChildTab.end())
-        return true;
-    return false;
-}
-bool Node::isLeftDesc(int srchID){
-    auto itID = this->leftChildTab.find(srchID);
-    if(itID != this->leftChildTab.end())
-        return true;
-    return false;
-}
-bool Node::isChild(int srchID){
-    return (srchID == this->getLeftChildID()) or (srchID == this->getRightChildID());
-}
-int Node::getMyID(){
-    return this->myID;
-}
-int Node::getLeftChildID(){
-    return this->leftChild->getMyID();
-}
-int Node::getRightChildID(){
-    return this->rightChild->getMyID();
-}
-Node *Node::getOtherChild(Node *pref){
-    if(this->leftChild == pref)
-        return this->rightChild;
-    if(this->rightChild == pref)
-        return this->leftChild;
-    std::cout << pref->getMyID() << " is not a child of the vertex : " << this->getMyID() << std::endl;
-    return new Node(-1);
-}
-int Node::getParentID(){
-    return this->parent->getMyID();
-}
-Node *Node::getParent(){
-    return this->parent;
-}
-int Node::amRightChild(){
-    return this->parent->getRightChildID() == this->getMyID();
-}
-Node *Node::getRightChild(){
-    return this->rightChild;
-}
-Node *Node::getLeftChild(){
-    return this->leftChild;
-}
-std::set<int> Node::getRightChildTab(){
-    return this->rightChildTab;
-}
-std::set<int> Node::getLeftChildTab(){
-    return this->leftChildTab;
-}
-
 void printNode(Node *toPrint){
     if(toPrint->myID == -1){
         std::cout << "Empty vertex" << std::endl;
@@ -225,10 +230,9 @@ void printNode(Node *toPrint){
     std::cout << "Vertex's ID : " << toPrint->myID << std::endl;
     std::cout << "Vertex's Parent : " << toPrint->getParentID() << std::endl;
     std::cout << "Vertex's Left Child : " << toPrint->getLeftChildID() << " || Vertex's Right Child : " << toPrint->getRightChildID() << std::endl;
-
     std::cout << "Vertex Descendants : " << std::endl;
     for(int x : toPrint->getLeftChildTab()) std::cout << x << " | ";
     for(int x : toPrint->getRightChildTab()) std::cout << " | " << x;
     std::cout << std::endl;
-
 }
+/* End of Friend Functions */
