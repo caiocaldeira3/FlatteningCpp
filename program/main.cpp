@@ -5,12 +5,12 @@
 int main(){
 
     std::vector<std::vector<int> > grafo;
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 1000; i++)
         grafo.push_back(std::vector<int>());
-    for(int i = 0; i < 10; i++){
-        if(i*2+1 < 10)
+    for(int i = 0; i < 1000; i++){
+        if(i*2+1 < 1000)
             grafo[i].push_back(i*2+1);
-        if(i*2+2 < 10)
+        if(i*2+2 < 1000)
             grafo[i].push_back(i*2+2);
     }
     /*
@@ -27,11 +27,19 @@ int main(){
     RedeSemiTD.topDownSemi(RedeSemiTD.getNode(1), RedeSemiTD.getNode(1), RedeSemiTD.getNode(10), RedeSemiTD.getNode(1)->getParent());
     RedeSemiTD.printNetwork();
     */
+	const clock_t total_time = clock();
+	Flattening RedeFlatten(grafo);
+	 srand (time(NULL));
     std::cout << "Testando a função Hybrid Flattening" << std::endl;
-    Flattening RedeFlatten = Flattening(grafo);
-    RedeFlatten.printNetwork();
-    RedeFlatten.hybridFlatten(RedeFlatten.getNode(7), RedeFlatten.getNode(10));
-    RedeFlatten.printNetwork();
-    RedeFlatten.hybridFlatten(RedeFlatten.getNode(9), RedeFlatten.getNode(6));
-    RedeFlatten.printNetwork();
+	for(int i = 0; i < 1000; i++){
+		int x = rand()%1000 + 1;
+		int y = rand()%1000 + 1;
+		if(x == y)
+			continue;
+		std::cout << "Requester : "<< x << " " << "Target : " << y << std::endl;
+		clock_t begin_time = clock();
+		RedeFlatten.hybridFlatten(RedeFlatten.getNode(x), RedeFlatten.getNode(y));
+		std::cout << "End of the request in : " << float(clock() - begin_time) / CLOCKS_PER_SEC << std::endl;
+	}
+	std::cout << float(clock() - total_time) / CLOCKS_PER_SEC << std::endl;
 }
