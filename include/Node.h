@@ -12,12 +12,8 @@ private:
     Node* leftChild;
     Node* rightChild;
     std::set<int> leftChildTab, rightChildTab;
-    bool amI(int srchId);
-    bool isRightDesc(int srchId);
-    bool isLeftDesc(int srchId);
     void updateTable(int newID, int fromID);
     void updateTable(int side);
-    void deleteSelf();
 public:
     Node();
     Node(int nullNode) : myID(nullNode) { };
@@ -31,13 +27,19 @@ public:
     int getRightChildID();
 	int getParentID();
     int amRightChild();
+    bool amI(int srchId);
+    bool isRightDesc(int srchId);
+    bool isLeftDesc(int srchId);
     Node *getRightChild();
+    Node *getLeftChild();
     Node *getOtherChild(Node *prefChild);
     Node *getParent();
     bool amHigh(int srchID);
+    bool isChild(int srchID);
     std::set<int> getLeftChildTab();
     std::set<int> getRightChildTab();
 
+    friend void childSwap(Node *oldNext, Node *curr, Node *newNext, Node *other);
     friend void replaceChild(Node *target, Node *receiver, int typ);
     friend void printNode(Node *toPrint);
 };

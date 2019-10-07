@@ -49,11 +49,24 @@ void Flattening::bottomUP(Node *curr, Node *req, Node *pref){
     int typ = (curr->amRightChild()  << 1) + other->amRightChild();
     replaceChild(curr, parentNode, typ);
     grandParent->fix(curr, parentNode);
-    if(curr->amHigh(req->getMyID())){
-        grandParent->fix(curr, parentNode);
-    }else{
+    if(!curr->amHigh(req->getMyID()))
         this->bottomUP(curr, req, parentNode);
-    }
+}
+Node *Flattening::getNextNode(Node *curr, Node *target){
+    if(curr->isRightDesc(target->getMyID()))
+        return curr->getRightChild();
+    if(curr->isLeftDesc(target->getMyID()))
+        return curr->getLeftChild();
+    return curr->getParent();
+}
+void Flattening::topDownSemi(Node *curr, Node *req, Node *target, Node *newParent){
+    if(curr->amI(target->getMyID()) or curr->isChild(target->getMyID()))
+        return;
+    Node *nextNode = getNextNode(curr, target);
+    Node *otherNode = curr->getOtherChild(nextNode);
+    Node *dbNextNode = getNextNode(nextNode, target);
+    childSwap(nextNode, curr, dbNextNode, otherNode);
+    topDownSemi(dbNextNode, req, target, curr);
 }
 void Flattening::printNetwork(){
     std::cout << "--------------------------" << std::endl;

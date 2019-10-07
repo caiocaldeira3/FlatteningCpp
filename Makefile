@@ -21,7 +21,6 @@ all: main
 run: main
 	$(BINDIR)/main
 
-
 clean:
 	$(RM) -r bin
 

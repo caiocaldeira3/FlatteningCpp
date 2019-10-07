@@ -109,6 +109,33 @@ void replaceChild(Node *target, Node *receiver, int typ){
         return;
     }
 }
+void childSwap(Node *oldNext, Node *curr, Node *newNext, Node *other){
+    if(newNext->amRightChild()){
+        oldNext->rightChild = other;
+        if(other->amRightChild()){
+            curr->rightChild = newNext;
+            std::swap(oldNext->rightChildTab, curr->rightChildTab);
+            curr->updateTable(0);
+        }else{
+            curr->leftChild = newNext;
+            std::swap(oldNext->rightChildTab, curr->leftChildTab);
+            curr->updateTable(1);
+        }
+    }else{
+        oldNext->leftChild = other;
+        if(other->amRightChild()){
+            curr->rightChild = newNext;
+            std::swap(oldNext->leftChildTab, curr->rightChildTab);
+            curr->updateTable(0);
+        }else{
+            curr->leftChild = newNext;
+            std::swap(oldNext->leftChildTab, curr->leftChildTab);
+            curr->updateTable(1);
+        }
+    }
+    oldNext->setChildParent(other);
+    curr->setChildParent(newNext);
+}
 void Node::fix(Node *newChild, Node *formerChild){
     if(formerChild->amRightChild()){
         this->rightChild = newChild;
@@ -121,18 +148,6 @@ void Node::fix(Node *newChild, Node *formerChild){
         return;
     }
 }
-
-void Node::deleteSelf(){
-    auto itl = this->leftChildTab.find(this->myID);
-    auto itr = this->rightChildTab.find(this->myID);
-    if(itl != this->leftChildTab.end()){
-        this->leftChildTab.erase(itl);
-    }
-    if(itr != this->rightChildTab.end()){
-        this->rightChildTab.erase(itr);
-    }
-}
-
 Node *Node::findNode(int srchID){
     if(this->amI(srchID)) return this;
     if(this->isRightDesc(srchID)) return this->rightChild->findNode(srchID);
@@ -159,6 +174,9 @@ bool Node::isLeftDesc(int srchID){
     if(itID != this->leftChildTab.end())
         return true;
     return false;
+}
+bool Node::isChild(int srchID){
+    return (srchID == this->getLeftChildID()) or (srchID == this->getRightChildID());
 }
 int Node::getMyID(){
     return this->myID;
@@ -188,6 +206,9 @@ int Node::amRightChild(){
 }
 Node *Node::getRightChild(){
     return this->rightChild;
+}
+Node *Node::getLeftChild(){
+    return this->leftChild;
 }
 std::set<int> Node::getRightChildTab(){
     return this->rightChildTab;
