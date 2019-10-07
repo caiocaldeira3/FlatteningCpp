@@ -140,7 +140,7 @@ Node *Node::getOtherChild(Node *pref){
 Node *Node::getParent(){
     return this->parent;
 }
-}int Node::getMyID(){
+int Node::getMyID(){
     return this->myID;
 }
 int Node::getLeftChildID(){
