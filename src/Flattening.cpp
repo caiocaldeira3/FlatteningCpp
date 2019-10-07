@@ -22,7 +22,11 @@ Flattening::Flattening(std::vector<std::vector<int> > originalGraph){
 /* Getters */
 Node *Flattening::getNode(int id){
     if(id > this->size) return new Node(-1);
-    return this->rede[id-1];
+    for(auto x : this->rede){
+        if(x->amI(id))
+            return x;
+    }
+    return new Node(-1);
 }
 Node *Flattening::getNextNode(Node *curr, Node *target){
     if(curr->isRightDesc(target->getMyID()))
@@ -37,8 +41,7 @@ Node *Flattening::getNextNode(Node *curr, Node *target){
 void Flattening::bottomUP(Node *curr, Node *req, Node *target, Node *pref){
     Node *parentNode = curr->getParent();
     Node *grandParent = parentNode->getParent();
-    Node *other = curr->getOtherChild(pref);
-    int typ = (curr->amRightChild()  << 1) + other->amRightChild();
+    int typ = (curr->amRightChild() << 1) + parentNode->amRightChild();
     replaceChild(curr, parentNode, typ);
     grandParent->fix(curr, parentNode);
     if(!curr->amHigh(target->getMyID()))

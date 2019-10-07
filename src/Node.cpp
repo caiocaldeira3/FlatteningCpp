@@ -103,7 +103,8 @@ bool Node::amI(int srchID){
     return srchID == this->myID;
 }
 int Node::amRightChild(){
-    return this->parent->getRightChildID() == this->getMyID();
+    if(this->parent->getMyID() == -1) return 1;
+    return (this->parent->getRightChildID() == this->getMyID() ? 1 : 0);
 }
 bool Node::isChild(int srchID){
     return (srchID == this->getLeftChildID()) or (srchID == this->getRightChildID());

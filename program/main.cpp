@@ -34,5 +34,4 @@ int main(){
     RedeFlatten.printNetwork();
     RedeFlatten.hybridFlatten(RedeFlatten.getNode(9), RedeFlatten.getNode(6));
     RedeFlatten.printNetwork();
-
 }
