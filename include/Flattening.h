@@ -13,14 +13,10 @@ public:
     Flattening(std::vector<std::vector<int> > originalGraph);
     Node *getNode(int id);
     Node *getNextNode(Node *curr, Node *target);
-    void bottomUP(Node *curr, Node *req, Node *pref);
+    void bottomUP(Node *curr, Node *target, Node *req, Node *pref);
     void topDownSemi(Node *curr, Node *req, Node *target, Node *newParent);
     void printNetwork();
-
-    /* Ainda falta a implementação
-    void getRequest(int reqID, int targetID);
     void hybridFlatten(Node *target, Node *req);
-    */
 };
 
 #endif

@@ -42,15 +42,15 @@ Node *Flattening::getNode(int id){
     if(id > this->size) return new Node(-1);
     return this->rede[id-1];
 }
-void Flattening::bottomUP(Node *curr, Node *req, Node *pref){
+void Flattening::bottomUP(Node *curr, Node *req, Node *target, Node *pref){
     Node *parentNode = curr->getParent();
     Node *grandParent = parentNode->getParent();
     Node *other = curr->getOtherChild(pref);
     int typ = (curr->amRightChild()  << 1) + other->amRightChild();
     replaceChild(curr, parentNode, typ);
     grandParent->fix(curr, parentNode);
-    if(!curr->amHigh(req->getMyID()))
-        this->bottomUP(curr, req, parentNode);
+    if(!curr->amHigh(target->getMyID()))
+        this->bottomUP(curr, req, target, parentNode);
 }
 Node *Flattening::getNextNode(Node *curr, Node *target){
     if(curr->isRightDesc(target->getMyID()))
@@ -67,6 +67,18 @@ void Flattening::topDownSemi(Node *curr, Node *req, Node *target, Node *newParen
     Node *dbNextNode = getNextNode(nextNode, target);
     childSwap(nextNode, curr, dbNextNode, otherNode);
     topDownSemi(dbNextNode, req, target, curr);
+}
+void Flattening::hybridFlatten(Node *req, Node *target){
+    if(!req->amHigh(target->getMyID())){
+        Node *pref;
+        if(req->getLeftChildID() != -1)
+            pref = req->getLeftChild();
+        else
+            pref = req->getRightChild();
+        bottomUP(req, req, target, pref);
+    }
+    if(!req->isChild(target->getMyID()))
+        topDownSemi(req, req, target, req->getParent());
 }
 void Flattening::printNetwork(){
     std::cout << "--------------------------" << std::endl;
