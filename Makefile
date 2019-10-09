@@ -22,6 +22,6 @@ run: main
 	$(BINDIR)/main
 
 clean:
-	$(RM) -r bin
+	$(RM) -r bin output/*
 
 .PHONY: clean coverage

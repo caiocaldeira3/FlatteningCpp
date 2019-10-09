@@ -22,9 +22,9 @@ public:
     Node *getNextNode(Node *curr, Node *target);
     /* End of Getter */
     /* Algorithms */
-    void bottomUP(Node *curr, Node *target, Node *req, Node *pref);
-    void topDownSemi(Node *curr, Node *req, Node *target, Node *newParent);
-    void hybridFlatten(Node *target, Node *req);
+    int bottomUP(Node *curr, Node *target, Node *req, Node *pref);
+    int topDownSemi(Node *curr, Node *req, Node *target, Node *newParent);
+    int hybridFlatten(Node *target, Node *req, int qryID);
     /* End of Algorithms */
     /* Auxiliary Functions */
     void printNetwork();

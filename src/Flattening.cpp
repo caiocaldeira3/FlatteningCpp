@@ -38,35 +38,38 @@ Node *Flattening::getNextNode(Node *curr, Node *target){
 /* End of Getters */
 
 /* Algorithms */
-void Flattening::bottomUP(Node *curr, Node *req, Node *target, Node *pref){
+int Flattening::bottomUP(Node *curr, Node *req, Node *target, Node *pref){
     Node *parentNode = curr->getParent();
     Node *grandParent = parentNode->getParent();
     int typ = (curr->amRightChild() << 1) + parentNode->amRightChild();
     replaceChild(curr, parentNode, typ);
     grandParent->fix(curr, parentNode);
     if(!curr->amHigh(target->getMyID()))
-        this->bottomUP(curr, req, target, parentNode);
+		return this->bottomUP(curr, req, target, parentNode) + 1;
+	return 1;
 }
-void Flattening::topDownSemi(Node *curr, Node *req, Node *target, Node *newParent){
+int Flattening::topDownSemi(Node *curr, Node *req, Node *target, Node *newParent){
     if(curr->amI(target->getMyID()) or curr->isChild(target->getMyID()))
-        return;
+        return 0;
     Node *nextNode = getNextNode(curr, target);
     Node *otherNode = curr->getOtherChild(nextNode);
     Node *dbNextNode = getNextNode(nextNode, target);
     childSwap(nextNode, curr, dbNextNode, otherNode);
-    topDownSemi(dbNextNode, req, target, curr);
+	return topDownSemi(dbNextNode, req, target, curr) + 1;
 }
-void Flattening::hybridFlatten(Node *req, Node *target){
-    if(!req->amHigh(target->getMyID())){
+int Flattening::hybridFlatten(Node *req, Node *target, int qryID){
+    int ret = 0;
+	if(!req->amHigh(target->getMyID())){
         Node *pref;
         if(req->getLeftChildID() != -1)
             pref = req->getLeftChild();
         else
             pref = req->getRightChild();
-        bottomUP(req, req, target, pref);
+        ret += bottomUP(req, req, target, pref);
     }
     if(!req->isChild(target->getMyID()))
-        topDownSemi(req, req, target, req->getParent());
+        ret += topDownSemi(req, req, target, req->getParent());
+	return ret;
 }
 /* End of Algorithms */
 

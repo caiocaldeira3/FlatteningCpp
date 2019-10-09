@@ -4,13 +4,30 @@
 
 int main(){
 
+
+    std::ifstream inFile;
+    std::ofstream outFile;
+
+    inFile.open("./input/tor_128.txt");
+    if (!inFile) {
+        std::cout << "Unable to open input file" <<  std::endl;
+        exit(1); // terminate with error
+    }
+    outFile.open("./output/tor_128.txt");
+    if (!outFile) {
+        std::cout << "Unable to open output file" << std::endl;
+        exit(1); // terminate with error
+    }
+
+    int size; inFile >> size;
+
     std::vector<std::vector<int> > grafo;
-    for(int i = 0; i < 1000; i++)
+    for(int i = 0; i < size; i++)
         grafo.push_back(std::vector<int>());
-    for(int i = 0; i < 1000; i++){
-        if(i*2+1 < 1000)
+    for(int i = 0; i < size; i++){
+        if(i*2+1 < size)
             grafo[i].push_back(i*2+1);
-        if(i*2+2 < 1000)
+        if(i*2+2 < size)
             grafo[i].push_back(i*2+2);
     }
     /*
@@ -27,19 +44,23 @@ int main(){
     RedeSemiTD.topDownSemi(RedeSemiTD.getNode(1), RedeSemiTD.getNode(1), RedeSemiTD.getNode(10), RedeSemiTD.getNode(1)->getParent());
     RedeSemiTD.printNetwork();
     */
-	const clock_t total_time = clock();
+    int queries; inFile >> queries;
 	Flattening RedeFlatten(grafo);
 	 srand (time(NULL));
+	double tot_time = 0;
+    int tot_op = 0;
     std::cout << "Testando a função Hybrid Flattening" << std::endl;
-	for(int i = 0; i < 1000; i++){
-		int x = rand()%1000 + 1;
-		int y = rand()%1000 + 1;
-		if(x == y)
-			continue;
-		std::cout << "Requester : "<< x << " " << "Target : " << y << std::endl;
+	for(int i = 0; i < queries; i++){
+        int x, y;
+        inFile >> x >> y; x++; y++;
 		clock_t begin_time = clock();
-		RedeFlatten.hybridFlatten(RedeFlatten.getNode(x), RedeFlatten.getNode(y));
-		std::cout << "End of the request in : " << float(clock() - begin_time) / CLOCKS_PER_SEC << std::endl;
+		tot_op += RedeFlatten.hybridFlatten(RedeFlatten.getNode(x), RedeFlatten.getNode(y), i);
+		tot_time += float(clock() - begin_time) / CLOCKS_PER_SEC;
 	}
-	std::cout << float(clock() - total_time) / CLOCKS_PER_SEC << std::endl;
-}
+	int aux = size;
+	int log = 0;
+	while(aux/=2) log++;
+
+	outFile << "The average number of operations was " << tot_op/double(queries) << " to the expected " << log*2 << " on a static balanced tree" << std::endl;
+	outFile << "The averate time spent on each request was " << tot_time/double(queries) << std::endl;
+}	
