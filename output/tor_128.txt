@@ -1,2 +1,0 @@
-The average number of operations was 0.0007 to the expected 14 on a static balanced tree
-The averate time spent on each request was 1.574e-07

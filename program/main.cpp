@@ -36,7 +36,7 @@ int main(){
 	double tot_time = 0;
     int tot_op = 0;
     std::cout << "Testando a função Hybrid Flattening" << std::endl;
-	for(int i = 0; i < 1; i++){
+	for(int i = 0; i < queries; i++){
         int x, y;
         inFile >> x >> y; x++; y++;
 		clock_t begin_time = clock();
