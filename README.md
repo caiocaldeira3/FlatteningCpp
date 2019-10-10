@@ -1,7 +1,7 @@
 # Flattening on C++
 
 ### Authors/Autores:  
-[Caio - 2017068734](https://github.com/caiocaldeira3) 
+[Caio Alves Caldeira](https://github.com/caiocaldeira3) 
 
 ### Description/Descrição:
 
