@@ -33,5 +33,5 @@ Este projeto tem como objetivo simular o algoritmo Flattening proposto por Micha
     Não apresentar nenhum parâmetro fará com que o programa plote todos os resultados.
     
     
-#### Clean binaries/Limpar arquivos binários (.exe, .out, .o):
+#### Clean binaries and results/Limpar arquivos binários e resultados(.exe, .out, .o, .png, .txt):
 `make clean`
