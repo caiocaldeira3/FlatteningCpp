@@ -10,6 +10,7 @@ private:
 
     /* Attributes */
     int myID;
+    int counter;
     Node* parent;
     Node* leftChild;
     Node* rightChild;
@@ -27,6 +28,7 @@ public:
     /* End of Constructors */
 
     /* Setters and Updates */
+    void activate();
     void addChild(Node *newChild);
     void setChildParent(Node *newChild);
     void setMyParent(Node *parent);
@@ -51,6 +53,7 @@ public:
     int getLeftChildID();
     int getRightChildID();
 	int getParentID();
+    int getCounter();
     std::set<int> getLeftChildTab();
     std::set<int> getRightChildTab();
     /* End of Getters */

@@ -6,6 +6,7 @@ int Node::ID = 1;
 /* Constructors */
 Node::Node() {
    this->myID = ID++;
+   this->counter = 0;
    this->parent = new Node(-1);
    this->leftChild = new Node(-1);
    this->setChildParent(this->leftChild);
@@ -57,6 +58,9 @@ void Node::updateTable(int side){
 }
     /* End of Private */
     /* Public */
+void Node::activate(){
+    this->counter++;
+}
 void Node::addChild(Node *newChild){
     if(this->getLeftChildID() == -1){
         this->leftChild = newChild;
@@ -152,6 +156,9 @@ int Node::getRightChildID(){
 }
 int Node::getParentID(){
     return this->parent->getMyID();
+}
+int Node::getCounter(){
+    return this->counter;
 }
 std::set<int> Node::getRightChildTab(){
     return this->rightChildTab;

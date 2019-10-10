@@ -28,6 +28,7 @@ public:
     /* End of Algorithms */
     /* Auxiliary Functions */
     void printNetwork();
+    void exportGraph(int qryID);
     /* End of Auxiliary Functions */
 };
 

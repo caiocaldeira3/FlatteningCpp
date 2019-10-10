@@ -7,8 +7,6 @@ MAIN := program/main.cpp
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 
-# -g debug, --coverage para cobertura
-
 CFLAGS := -g -Wall -O3 -std=c++17
 INC := -I include/
 
@@ -21,7 +19,10 @@ all: main
 run: main
 	$(BINDIR)/main
 
+plot:
+	python3 GraphPlotter.py ${ARGS}
+
 clean:
-	$(RM) -r bin output/*
+	$(RM) -r bin output/graph_plots/* output/graph_states/* output/*.txt
 
 .PHONY: clean coverage

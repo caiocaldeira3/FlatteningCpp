@@ -30,20 +30,6 @@ int main(){
         if(i*2+2 < size)
             grafo[i].push_back(i*2+2);
     }
-    /*
-    Flattening RedeBUP = Flattening(grafo);
-    std::cout << "Testando a função Bottom Up Flattening" << std::endl;
-    RedeBUP.printNetwork();
-    RedeBUP.bottomUP(RedeBUP.getNode(10), RedeBUP.getNode(10), RedeBUP.getNode(9), RedeBUP.getNode(10)->getRightChild());
-    RedeBUP.printNetwork();
-    */
-    /*
-    std::cout << "Testando a função Semi Top-Down Flattening" << std::endl;
-    Flattening RedeSemiTD = Flattening(grafo);
-    RedeSemiTD.printNetwork();
-    RedeSemiTD.topDownSemi(RedeSemiTD.getNode(1), RedeSemiTD.getNode(1), RedeSemiTD.getNode(10), RedeSemiTD.getNode(1)->getParent());
-    RedeSemiTD.printNetwork();
-    */
     int queries; inFile >> queries;
 	Flattening RedeFlatten(grafo);
 	 srand (time(NULL));
@@ -55,12 +41,14 @@ int main(){
         inFile >> x >> y; x++; y++;
 		clock_t begin_time = clock();
 		tot_op += RedeFlatten.hybridFlatten(RedeFlatten.getNode(x), RedeFlatten.getNode(y), i);
+        RedeFlatten.exportGraph(i);
 		tot_time += float(clock() - begin_time) / CLOCKS_PER_SEC;
 	}
+    inFile.close();
 	int aux = size;
 	int log = 0;
 	while(aux/=2) log++;
-
 	outFile << "The average number of operations was " << tot_op/double(queries) << " to the expected " << log*2 << " on a static balanced tree" << std::endl;
 	outFile << "The averate time spent on each request was " << tot_time/double(queries) << std::endl;
-}	
+    outFile.close();
+}

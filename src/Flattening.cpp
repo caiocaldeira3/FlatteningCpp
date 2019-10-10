@@ -58,6 +58,8 @@ int Flattening::topDownSemi(Node *curr, Node *req, Node *target, Node *newParent
 	return topDownSemi(dbNextNode, req, target, curr) + 1;
 }
 int Flattening::hybridFlatten(Node *req, Node *target, int qryID){
+    req->activate();
+    target->activate();
     int ret = 0;
 	if(!req->amHigh(target->getMyID())){
         Node *pref;
@@ -67,8 +69,10 @@ int Flattening::hybridFlatten(Node *req, Node *target, int qryID){
             pref = req->getRightChild();
         ret += bottomUP(req, req, target, pref);
     }
-    if(!req->isChild(target->getMyID()))
+    if(!req->isChild(target->getMyID())){
         ret += topDownSemi(req, req, target, req->getParent());
+    }
+    this->exportGraph(qryID);
 	return ret;
 }
 /* End of Algorithms */
@@ -100,5 +104,39 @@ void Flattening::printNetwork(){
         printNode(toPrint);
         std::cout << "--------------------------" << std::endl;
     }
+}
+void Flattening::exportGraph(int qryID){
+    std::string fileName = "./output/graph_states/graph" + std::to_string(qryID) + ".txt";
+    std::ofstream outFile;
+    outFile.open(fileName);
+    if (!outFile) {
+        std::cout << "Unable to open output file" << std::endl;
+        exit(1); // terminate with error
+    }
+    int center = -1;
+    outFile << this->size << std::endl;
+    for(Node *x : this->rede)
+        if(x->getParentID() == -1)
+            center = x->getMyID();
+    std::stack<std::pair<int, std::pair<int, std::pair<int, int> > > > auxStack;
+    auxStack.push({center, {300,{1, 10000}}});
+    while(!auxStack.empty()){
+        auto par = auxStack.top(); auxStack.pop();
+        Node *curr = getNode(par.first);
+        int y = par.second.first;
+        int x = (par.second.second.first+par.second.second.second)/2;
+        outFile << curr->getMyID() << " " << curr->getCounter() << " " << x << " "  << y;
+        if(curr->getLeftChildID() != -1){
+            auxStack.push(std::make_pair(curr->getLeftChildID(), std::make_pair(y-10, std::make_pair(par.second.second.first, x))));
+            outFile << " " << curr->getLeftChildID();
+        }
+        if(curr->getRightChildID() != -1){
+            auxStack.push(std::make_pair(curr->getRightChildID(), std::make_pair(y-10, std::make_pair(x+1, par.second.second.second))));
+            outFile << " " << curr->getRightChildID();
+        }
+        outFile << std::endl;
+    }
+    outFile << center << std::endl;
+    outFile.close();
 }
 /* End of Auxiliary Functions */
